@@ -79,7 +79,7 @@ export default function ArticleForm() {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        toast.error('Failed to load data');
+        toast.error('Erreur lors du chargement des données');
       }
     };
 
@@ -91,7 +91,7 @@ export default function ArticleForm() {
       setLoading(true);
 
       if (!user?.id) {
-        throw new Error('User not authenticated');
+        throw new Error('Utilisateur non authentifié');
       }
 
       const articleData = {
@@ -114,11 +114,11 @@ export default function ArticleForm() {
 
       if (error) throw error;
 
-      toast.success(id ? 'Article updated successfully' : 'Article created successfully');
-      navigate('/dashboard');
+      toast.success(id ? 'Article modifié avec succès' : 'Article créé avec succès');
+      navigate('/');
     } catch (error) {
       console.error('Error saving article:', error);
-      toast.error('Failed to save article');
+      toast.error('Erreur lors de l\'enregistrement de l\'article');
     } finally {
       setLoading(false);
     }
@@ -146,10 +146,10 @@ export default function ArticleForm() {
         .getPublicUrl(filePath);
 
       setImageUrl(publicUrl);
-      toast.success('Image uploaded successfully');
+      toast.success('Image téléchargée avec succès');
     } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
+      toast.error('Erreur lors du téléchargement de l\'image');
     } finally {
       setUploadingImage(false);
     }
@@ -170,25 +170,25 @@ export default function ArticleForm() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4">
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/')}
           className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Dashboard
+          Retour au tableau de bord
         </button>
 
         <div className="bg-white rounded-lg shadow p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            {id ? 'Edit Article' : 'New Article'}
+            {id ? 'Modifier l\'article' : 'Nouvel article'}
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">Nom</label>
                 <input
                   type="text"
-                  {...register('name', { required: 'Name is required' })}
+                  {...register('name', { required: 'Le nom est requis' })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
                 {errors.name && (
@@ -197,12 +197,12 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <label className="block text-sm font-medium text-gray-700">Catégorie</label>
                 <select
-                  {...register('category', { required: 'Category is required' })}
+                  {...register('category', { required: 'La catégorie est requise' })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
-                  <option value="">Select a category</option>
+                  <option value="">Sélectionner une catégorie</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.name}>
                       {category.name}
@@ -215,12 +215,12 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Supplier</label>
+                <label className="block text-sm font-medium text-gray-700">Fournisseur</label>
                 <select
-                  {...register('supplier', { required: 'Supplier is required' })}
+                  {...register('supplier', { required: 'Le fournisseur est requis' })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
-                  <option value="">Select a supplier</option>
+                  <option value="">Sélectionner un fournisseur</option>
                   {suppliers.map((supplier) => (
                     <option key={supplier.id} value={supplier.name}>
                       {supplier.name}
@@ -233,12 +233,12 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Agency</label>
+                <label className="block text-sm font-medium text-gray-700">Agence</label>
                 <select
-                  {...register('agency', { required: 'Agency is required' })}
+                  {...register('agency', { required: 'L\'agence est requise' })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
-                  <option value="">Select an agency</option>
+                  <option value="">Sélectionner une agence</option>
                   {agencies.map((agency) => (
                     <option key={agency.id} value={agency.name}>
                       {agency.name}
@@ -251,13 +251,13 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                <label className="block text-sm font-medium text-gray-700">Quantité</label>
                 <input
                   type="number"
                   step="0.01"
                   {...register('quantity', {
-                    required: 'Quantity is required',
-                    min: { value: 0, message: 'Quantity must be positive' },
+                    required: 'La quantité est requise',
+                    min: { value: 0, message: 'La quantité doit être positive' },
                   })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -267,10 +267,10 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Unit</label>
+                <label className="block text-sm font-medium text-gray-700">Unité</label>
                 <input
                   type="text"
-                  {...register('unit', { required: 'Unit is required' })}
+                  {...register('unit', { required: 'L\'unité est requise' })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
                 {errors.unit && (
@@ -279,7 +279,7 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
+                <label className="block text-sm font-medium text-gray-700">Date d'expiration</label>
                 <input
                   type="date"
                   {...register('expiry_date')}
@@ -288,13 +288,13 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Unit Price</label>
+                <label className="block text-sm font-medium text-gray-700">Prix unitaire</label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <input
                     type="number"
                     step="0.01"
                     {...register('unit_price', {
-                      min: { value: 0, message: 'Unit price must be positive' },
+                      min: { value: 0, message: 'Le prix unitaire doit être positif' },
                     })}
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
@@ -333,12 +333,12 @@ export default function ArticleForm() {
                   {uploadingImage ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Uploading...
+                      Téléchargement...
                     </>
                   ) : (
                     <>
                       <Upload className="w-5 h-5 mr-2" />
-                      Upload Image
+                      Télécharger une image
                     </>
                   )}
                 </button>
@@ -367,18 +367,18 @@ export default function ArticleForm() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-gray-700">
                   <Calculator className="w-5 h-5 mr-2" />
-                  <span className="text-sm font-medium">Total Price:</span>
+                  <span className="text-sm font-medium">Prix total:</span>
                 </div>
-                <span className="text-lg font-semibold">${totalPrice.toFixed(2)}</span>
+                <span className="text-lg font-semibold">{totalPrice.toFixed(2)} €</span>
               </div>
               {(quantity === 0 || unitPrice === 0) && (
                 <div className="flex items-center mt-2 text-yellow-600">
                   <AlertTriangle className="w-4 h-4 mr-1" />
                   <span className="text-sm">
                     {quantity === 0
-                      ? 'Please enter a quantity'
+                      ? 'Veuillez entrer une quantité'
                       : unitPrice === 0
-                      ? 'Please enter a unit price'
+                      ? 'Veuillez entrer un prix unitaire'
                       : ''}
                   </span>
                 </div>
@@ -394,10 +394,10 @@ export default function ArticleForm() {
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Saving...
+                    Enregistrement...
                   </>
                 ) : (
-                  'Save Article'
+                  'Enregistrer l\'article'
                 )}
               </button>
             </div>
