@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { ArrowLeft, Upload, Loader2, Camera, X, Calculator, AlertTriangle } from 'lucide-react';
+import CameraCapture from '../components/CameraCapture';
 
 type FormData = {
   name: string;
@@ -25,6 +26,7 @@ export default function ArticleForm() {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [agencies, setAgencies] = useState<any[]>([]);
@@ -150,6 +152,33 @@ export default function ArticleForm() {
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error('Erreur lors du téléchargement de l\'image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleCameraCapture = async (imageBlob: Blob) => {
+    try {
+      setUploadingImage(true);
+      setShowCamera(false);
+
+      const fileName = `${Math.random()}.jpg`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('articles')
+        .upload(fileName, imageBlob);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('articles')
+        .getPublicUrl(fileName);
+
+      setImageUrl(publicUrl);
+      toast.success('Photo capturée avec succès');
+    } catch (error) {
+      console.error('Error uploading camera image:', error);
+      toast.error('Erreur lors de l\'enregistrement de la photo');
     } finally {
       setUploadingImage(false);
     }
@@ -342,6 +371,17 @@ export default function ArticleForm() {
                     </>
                   )}
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowCamera(true)}
+                  disabled={uploadingImage}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <Camera className="w-5 h-5 mr-2" />
+                  Prendre une photo
+                </button>
+
                 {imageUrl && (
                   <button
                     type="button"
@@ -404,6 +444,13 @@ export default function ArticleForm() {
           </form>
         </div>
       </div>
+
+      {showCamera && (
+        <CameraCapture
+          onCapture={handleCameraCapture}
+          onClose={() => setShowCamera(false)}
+        />
+      )}
     </div>
   );
 }
