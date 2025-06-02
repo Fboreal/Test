@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { ArrowLeft, Upload, Loader2, Camera, X, Calculator, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Upload, Loader2, Camera, X, Calculator, AlertTriangle, Plus } from 'lucide-react';
 import CameraCapture from '../components/CameraCapture';
 
 type FormData = {
@@ -31,6 +31,9 @@ export default function ArticleForm() {
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [agencies, setAgencies] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showNewSupplierInput, setShowNewSupplierInput] = useState(false);
+  const [newSupplierName, setNewSupplierName] = useState('');
+  const [addingSupplier, setAddingSupplier] = useState(false);
 
   const {
     register,
@@ -87,6 +90,42 @@ export default function ArticleForm() {
 
     fetchData();
   }, [id, setValue]);
+
+  const handleAddSupplier = async () => {
+    if (!newSupplierName.trim()) {
+      toast.error('Le nom du fournisseur ne peut pas être vide');
+      return;
+    }
+
+    setAddingSupplier(true);
+    try {
+      const { data, error } = await supabase
+        .from('suppliers')
+        .insert([{ name: newSupplierName.trim() }])
+        .select()
+        .single();
+
+      if (error) {
+        if (error.code === '23505') {
+          toast.error('Ce fournisseur existe déjà');
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      setSuppliers([...suppliers, data]);
+      setValue('supplier', data.name);
+      setNewSupplierName('');
+      setShowNewSupplierInput(false);
+      toast.success('Fournisseur ajouté avec succès');
+    } catch (error) {
+      console.error('Error adding supplier:', error);
+      toast.error('Erreur lors de l\'ajout du fournisseur');
+    } finally {
+      setAddingSupplier(false);
+    }
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -245,17 +284,59 @@ export default function ArticleForm() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Fournisseur</label>
-                <select
-                  {...register('supplier', { required: 'Le fournisseur est requis' })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="">Sélectionner un fournisseur</option>
-                  {suppliers.map((supplier) => (
-                    <option key={supplier.id} value={supplier.name}>
-                      {supplier.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="mt-1 flex space-x-2">
+                  {showNewSupplierInput ? (
+                    <div className="flex-1 flex space-x-2">
+                      <input
+                        type="text"
+                        value={newSupplierName}
+                        onChange={(e) => setNewSupplierName(e.target.value)}
+                        placeholder="Nom du nouveau fournisseur"
+                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddSupplier}
+                        disabled={addingSupplier}
+                        className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
+                      >
+                        {addingSupplier ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          'Ajouter'
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowNewSupplierInput(false)}
+                        className="px-3 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition-colors"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <select
+                        {...register('supplier', { required: 'Le fournisseur est requis' })}
+                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      >
+                        <option value="">Sélectionner un fournisseur</option>
+                        {suppliers.map((supplier) => (
+                          <option key={supplier.id} value={supplier.name}>
+                            {supplier.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setShowNewSupplierInput(true)}
+                        className="px-3 py-2 bg-orange-100 text-orange-600 rounded-md hover:bg-orange-200 transition-colors"
+                      >
+                        <Plus className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
+                </div>
                 {errors.supplier && (
                   <p className="mt-1 text-sm text-red-600">{errors.supplier.message}</p>
                 )}
