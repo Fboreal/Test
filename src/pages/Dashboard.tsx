@@ -711,11 +711,16 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   <div className="p-4">
-                    <Link to={`/articles/${article.id}`} className="block">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
-                        {article.name}
-                      </h3>
-                    </Link>
+                    <div className="flex justify-between items-baseline">
+                      <Link to={`/articles/${article.id}`} className="block">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                          {article.name}
+                        </h3>
+                      </Link>
+                      <span className="text-sm font-medium text-gray-600">
+                        {article.quantity} {article.unit}
+                      </span>
+                    </div>
                     
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
@@ -726,14 +731,10 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     
-                    <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-                      <span>Fournisseur: {article.supplier}</span>
-                      <span className="font-medium">{article.quantity} {article.unit}</span>
-                    </div>
-
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-gray-600">Fournisseur: {article.supplier}</span>
+                      <span className="flex items-center text-gray-500">
+                        <Calendar className="h-4 w-4 mr-1" />
                         Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
                       </span>
                     </div>
