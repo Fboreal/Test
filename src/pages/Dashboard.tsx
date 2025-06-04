@@ -179,13 +179,13 @@ const Dashboard: React.FC = () => {
   // Vérifier si un article est expiré ou expire bientôt
   const getExpiryStatus = (article: Article): 'expired' | 'expiring-soon' | 'valid' | null => {
     if (!article.expiry_date) return null;
-    
+
     const today = new Date();
     const expiryDate = new Date(article.expiry_date);
-    
+
     if (isBefore(expiryDate, today)) {
       return 'expired';
-    } else if (isBefore(expiryDate, addDays(today, 30))) {
+    } else if (isBefore(expiryDate, addDays(today, 15))) {
       return 'expiring-soon';
     } else {
       return 'valid';
@@ -528,7 +528,7 @@ const Dashboard: React.FC = () => {
                 >
                   <option value="">Tous les statuts</option>
                   <option value="expired">Périmés</option>
-                  <option value="expiring-soon">Expire bientôt (30 jours)</option>
+                  <option value="expiring-soon">Expire bientôt (15 jours)</option>
                   <option value="valid">Valides</option>
                 </select>
               </div>
@@ -696,8 +696,7 @@ const Dashboard: React.FC = () => {
                     </div>
                     
                     {expiryStatus === 'expired' && (
-                      <div className="absolute bottom-2 left-2 bg-red-100 text-red-800 px-2 py-1 rounded-md text-xs font-medium flex items-center">
-                        <AlertCircle className="h-3 w-3 mr-1" />
+                      <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold">
                         Périmé
                       </div>
                     )}
@@ -713,9 +712,9 @@ const Dashboard: React.FC = () => {
                   <div className="p-4">
                     <div className="flex justify-between items-baseline">
                       <Link to={`/articles/${article.id}`} className="block">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                        <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
                           {article.name}
-                        </h3>
+                        </h2>
                       </Link>
                       <span className="text-sm font-medium text-gray-600">
                         {article.quantity} {article.unit}
@@ -731,41 +730,36 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     
-                    <div className="text-sm text-gray-600 mb-2">
-                      Fournisseur: {article.supplier}
-                    </div>
-
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>
-                        Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
-                      </span>
-                    </div>
-                    
-                    {/* Description - affichée uniquement si elle existe */}
-                    {hasDescription && (
-                      <div className="mt-2 mb-3">
-                        <div className="flex items-start text-sm text-gray-600">
+                    <div className="bg-gray-50 rounded-md p-2 text-sm text-gray-600 space-y-1 mb-3">
+                      <div>Fournisseur: {article.supplier}</div>
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        <span>
+                          Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                        </span>
+                      </div>
+                      {hasDescription && (
+                        <div className="flex items-start">
                           <FileText className="h-4 w-4 mr-1 mt-0.5 text-orange-500 flex-shrink-0" />
                           <div>
-                            <p className={isDescriptionExpanded ? "" : "line-clamp-2"}>
+                            <p className={isDescriptionExpanded ? '' : 'line-clamp-2'}>
                               {article.description}
                             </p>
                             {article.description && article.description.length > 100 && (
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.preventDefault();
                                   toggleDescriptionExpand(article.id);
                                 }}
                                 className="text-orange-600 hover:text-orange-800 text-xs mt-1 font-medium"
                               >
-                                {isDescriptionExpanded ? "Voir moins" : "Voir plus"}
+                                {isDescriptionExpanded ? 'Voir moins' : 'Voir plus'}
                               </button>
                             )}
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                     
                     <div className="mt-3 space-y-1">
                       {article.unit_price !== null && (
@@ -788,12 +782,12 @@ const Dashboard: React.FC = () => {
                     </div>
                     
                     {article.expiry_date && (
-                      <div className="flex items-center text-sm mt-2" 
-                        style={{ 
-                          color: expiryStatus === 'expired' ? '#e53e3e' : 
-                                 expiryStatus === 'expiring-soon' ? '#dd6b20' : 
-                                 '#718096' 
-                        }}
+                      <div
+                        className={`flex items-center text-sm mt-2 ${
+                          expiryStatus === 'expired' || expiryStatus === 'expiring-soon'
+                            ? 'text-red-600 font-bold'
+                            : 'text-gray-600'
+                        }`}
                       >
                         <Calendar className="h-4 w-4 mr-1" />
                         <span>
