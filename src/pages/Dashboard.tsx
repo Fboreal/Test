@@ -325,8 +325,13 @@ const Dashboard: React.FC = () => {
           .from('articles')
           .delete()
           .eq('id', id);
-          
+
         if (error) throw error;
+
+        setArticles(prev => prev.filter(article => article.id !== id));
+        setFilteredArticles(prev => prev.filter(article => article.id !== id));
+        setOpenActionMenuId(null);
+
         toast.success('Article supprimé avec succès');
       } catch (error) {
         console.error('Error deleting article:', error);
