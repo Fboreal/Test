@@ -75,7 +75,7 @@ const ArticleDetails: React.FC = () => {
     
     if (isBefore(expiryDate, today)) {
       return 'expired';
-    } else if (isBefore(expiryDate, addDays(today, 30))) {
+    } else if (isBefore(expiryDate, addDays(today, 15))) {
       return 'expiring-soon';
     } else {
       return 'valid';
@@ -148,6 +148,11 @@ const ArticleDetails: React.FC = () => {
                 >
                   <ZoomIn className="h-4 w-4" />
                 </button>
+                {expiryStatus === 'expired' && (
+                  <div className="absolute top-2 right-2 translate-x-12 bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold">
+                    Périmé
+                  </div>
+                )}
               </div>
             ) : (
               <div className="w-full h-full min-h-64 flex items-center justify-center">
@@ -251,20 +256,24 @@ const ArticleDetails: React.FC = () => {
                 {article.expiry_date && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Date de péremption</h3>
-                    <p className={`text-lg font-semibold flex items-center ${
-                      expiryStatus === 'expired' ? 'text-red-600' : 
-                      expiryStatus === 'expiring-soon' ? 'text-orange-600' : 
-                      'text-gray-800'
-                    }`}>
-                      <Calendar className={`h-5 w-5 mr-1 ${
-                        expiryStatus === 'expired' ? 'text-red-500' : 
-                        expiryStatus === 'expiring-soon' ? 'text-orange-500' : 
-                        'text-gray-500'
-                      }`} />
+                    <p
+                      className={`text-lg flex items-center ${
+                        expiryStatus === 'expired' || expiryStatus === 'expiring-soon'
+                          ? 'font-bold text-red-600'
+                          : 'font-semibold text-gray-800'
+                      }`}
+                    >
+                      <Calendar
+                        className={`h-5 w-5 mr-1 ${
+                          expiryStatus === 'expired' || expiryStatus === 'expiring-soon'
+                            ? 'text-red-600'
+                            : 'text-gray-500'
+                        }`}
+                      />
                       {format(new Date(article.expiry_date), 'dd MMMM yyyy', { locale: fr })}
                     </p>
-                  </div>
-                )}
+                 </div>
+               )}
               </div>
             </div>
 
