@@ -458,7 +458,7 @@ const Dashboard: React.FC = () => {
         
         {showFilters && (
           <div className="bg-orange-50 p-4 rounded-md mb-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Catégorie
@@ -617,7 +617,7 @@ const Dashboard: React.FC = () => {
           <p className="text-sm text-gray-500 mb-4">
             {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''} trouvé{filteredArticles.length > 1 ? 's' : ''}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredArticles.map(article => {
               const expiryStatus = getExpiryStatus(article);
               const hasDescription = article.description && article.description.trim().length > 0;
@@ -625,13 +625,13 @@ const Dashboard: React.FC = () => {
               
               return (
                 <div key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="h-48 bg-gray-200 relative">
+                  <div className="h-40 sm:h-48 bg-gray-200 relative">
                     {article.image_url ? (
                       <div className="w-full h-full overflow-hidden">
-                        <img 
-                          src={article.image_url} 
-                          alt={article.name} 
-                          className="w-full h-full object-contain cursor-pointer"
+                        <img
+                          src={article.image_url}
+                          alt={article.name}
+                          className="w-full h-full object-cover cursor-pointer"
                           onClick={() => setFullscreenImage({url: article.image_url!, alt: article.name})}
                         />
                         <button
