@@ -716,24 +716,25 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   <div className="p-4">
-                    <Link to={`/articles/${article.id}`} className="block">
-                        <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                      <Link to={`/articles/${article.id}`} className="flex-1">
+                        <h2 className="text-lg font-bold text-gray-800 hover:text-orange-600 transition-colors">
                           {article.name}
                         </h2>
-                    </Link>
-                    
+                      </Link>
+                      <div className="flex items-center text-sm text-gray-600 ml-2" title="Quantité">
+                        <Package className="h-4 w-4 mr-1" />
+                        <span className="font-medium">{article.quantity} {article.unit}</span>
+                      </div>
+                    </div>
+
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getCategoryStyles(article.category)}`}> 
+                        <span className={`px-2 py-1 text-xs rounded-full ${getCategoryStyles(article.category)}`}>
                           {article.category}
                         </span>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                           {article.agency}
                         </span>
-                      </div>
-                    
-                      <div className="flex items-center text-sm text-gray-600 mb-2">
-                        <Package className="h-4 w-4 mr-1" title="Quantité" />
-                        <span className="font-medium">{article.quantity} {article.unit}</span>
                       </div>
 
                     
