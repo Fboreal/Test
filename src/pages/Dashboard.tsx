@@ -736,8 +736,13 @@ const Dashboard: React.FC = () => {
                           {article.agency}
                         </span>
                       </div>
+                      <div className="flex items-center text-sm text-gray-500 mb-2">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        <span>
+                          Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                        </span>
+                      </div>
 
-                    
                     {/* Description - affichée uniquement si elle existe */}
                     {hasDescription && (
                       <div className="mt-2 mb-3">
@@ -800,12 +805,6 @@ const Dashboard: React.FC = () => {
                       )}
 
                       <div className="bg-gray-50 p-2 rounded-md text-sm text-gray-600 space-y-1 mt-3">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" title="Date d'ajout" />
-                          <span>
-                            Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
-                          </span>
-                        </div>
                         <div className="flex items-center">
                           <Package className="h-4 w-4 mr-1" title="Fournisseur" />
                           <span>{article.supplier}</span>
