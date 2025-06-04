@@ -390,7 +390,7 @@ export default function ArticleForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Date d'expiration</label>
+              <label className="block text-sm font-medium text-gray-700">Date d'expiration (optionnelle)</label>
                 <input
                   type="date"
                   {...register('expiry_date')}
