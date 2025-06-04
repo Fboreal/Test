@@ -730,6 +730,13 @@ const Dashboard: React.FC = () => {
                       <span>Fournisseur: {article.supplier}</span>
                       <span className="font-medium">{article.quantity} {article.unit}</span>
                     </div>
+
+                    <div className="flex items-center text-sm text-gray-500 mb-2">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>
+                        Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                      </span>
+                    </div>
                     
                     {/* Description - affichée uniquement si elle existe */}
                     {hasDescription && (
