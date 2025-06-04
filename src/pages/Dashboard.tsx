@@ -325,8 +325,13 @@ const Dashboard: React.FC = () => {
           .from('articles')
           .delete()
           .eq('id', id);
-          
+
         if (error) throw error;
+
+        setArticles(prev => prev.filter(article => article.id !== id));
+        setFilteredArticles(prev => prev.filter(article => article.id !== id));
+        setOpenActionMenuId(null);
+
         toast.success('Article supprimé avec succès');
       } catch (error) {
         console.error('Error deleting article:', error);
@@ -724,6 +729,13 @@ const Dashboard: React.FC = () => {
                     <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
                       <span>Fournisseur: {article.supplier}</span>
                       <span className="font-medium">{article.quantity} {article.unit}</span>
+                    </div>
+
+                    <div className="flex items-center text-sm text-gray-500 mb-2">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>
+                        Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                      </span>
                     </div>
                     
                     {/* Description - affichée uniquement si elle existe */}
