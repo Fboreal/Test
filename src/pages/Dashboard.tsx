@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
-import { Search, Filter, Package, Calendar, Trash2, Edit, DollarSign, AlertCircle, Plus, FileText, ZoomIn, MoreVertical } from 'lucide-react';
+import { Search, Filter, Package, Calendar, Trash2, Edit, DollarSign, AlertCircle, Plus, ZoomIn, MoreVertical, MessageCircle } from 'lucide-react';
 import { format, isAfter, addDays, isBefore } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import ImageViewer from '../components/ImageViewer';
@@ -179,13 +179,13 @@ const Dashboard: React.FC = () => {
   // Vérifier si un article est expiré ou expire bientôt
   const getExpiryStatus = (article: Article): 'expired' | 'expiring-soon' | 'valid' | null => {
     if (!article.expiry_date) return null;
-    
+
     const today = new Date();
     const expiryDate = new Date(article.expiry_date);
-    
+
     if (isBefore(expiryDate, today)) {
       return 'expired';
-    } else if (isBefore(expiryDate, addDays(today, 30))) {
+    } else if (isBefore(expiryDate, addDays(today, 15))) {
       return 'expiring-soon';
     } else {
       return 'valid';
@@ -209,6 +209,11 @@ const Dashboard: React.FC = () => {
   const toggleActionMenu = (articleId: string) => {
     setOpenActionMenuId(prev => prev === articleId ? null : articleId);
   };
+
+  const getCategoryStyles = (category: string) =>
+    category.toLowerCase() === 'résine'
+      ? 'bg-orange-100 text-orange-800'
+      : 'bg-blue-100 text-blue-800';
 
   // Close action menu when clicking outside
   useEffect(() => {
@@ -325,8 +330,13 @@ const Dashboard: React.FC = () => {
           .from('articles')
           .delete()
           .eq('id', id);
-          
+
         if (error) throw error;
+
+        setArticles(prev => prev.filter(article => article.id !== id));
+        setFilteredArticles(prev => prev.filter(article => article.id !== id));
+        setOpenActionMenuId(null);
+
         toast.success('Article supprimé avec succès');
       } catch (error) {
         console.error('Error deleting article:', error);
@@ -453,7 +463,7 @@ const Dashboard: React.FC = () => {
         
         {showFilters && (
           <div className="bg-orange-50 p-4 rounded-md mb-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Catégorie
@@ -612,7 +622,7 @@ const Dashboard: React.FC = () => {
           <p className="text-sm text-gray-500 mb-4">
             {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''} trouvé{filteredArticles.length > 1 ? 's' : ''}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredArticles.map(article => {
               const expiryStatus = getExpiryStatus(article);
               const hasDescription = article.description && article.description.trim().length > 0;
@@ -620,13 +630,13 @@ const Dashboard: React.FC = () => {
               
               return (
                 <div key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="h-48 bg-gray-200 relative">
+                  <div className="h-40 sm:h-48 bg-gray-200 relative">
                     {article.image_url ? (
                       <div className="w-full h-full overflow-hidden">
-                        <img 
-                          src={article.image_url} 
-                          alt={article.name} 
-                          className="w-full h-full object-contain cursor-pointer"
+                        <img
+                          src={article.image_url}
+                          alt={article.name}
+                          className="w-full h-full object-cover cursor-pointer"
                           onClick={() => setFullscreenImage({url: article.image_url!, alt: article.name})}
                         />
                         <button
@@ -690,12 +700,12 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     
-                    {expiryStatus === 'expired' && (
-                      <div className="absolute bottom-2 left-2 bg-red-100 text-red-800 px-2 py-1 rounded-md text-xs font-medium flex items-center">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        Périmé
-                      </div>
-                    )}
+                      {expiryStatus === 'expired' && (
+                        <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-semibold flex items-center">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Périmé
+                        </div>
+                      )}
                     
                     {expiryStatus === 'expiring-soon' && (
                       <div className="absolute bottom-2 left-2 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md text-xs font-medium flex items-center">
@@ -707,30 +717,31 @@ const Dashboard: React.FC = () => {
                   
                   <div className="p-4">
                     <Link to={`/articles/${article.id}`} className="block">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
-                        {article.name}
-                      </h3>
+                        <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                          {article.name}
+                        </h2>
                     </Link>
                     
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
-                        {article.category}
-                      </span>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        {article.agency}
-                      </span>
-                    </div>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className={`px-2 py-1 text-xs rounded-full ${getCategoryStyles(article.category)}`}> 
+                          {article.category}
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                          {article.agency}
+                        </span>
+                      </div>
                     
-                    <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-                      <span>Fournisseur: {article.supplier}</span>
-                      <span className="font-medium">{article.quantity} {article.unit}</span>
-                    </div>
+                      <div className="flex items-center text-sm text-gray-600 mb-2">
+                        <Package className="h-4 w-4 mr-1" title="Quantité" />
+                        <span className="font-medium">{article.quantity} {article.unit}</span>
+                      </div>
+
                     
                     {/* Description - affichée uniquement si elle existe */}
                     {hasDescription && (
                       <div className="mt-2 mb-3">
                         <div className="flex items-start text-sm text-gray-600">
-                          <FileText className="h-4 w-4 mr-1 mt-0.5 text-orange-500 flex-shrink-0" />
+                          <MessageCircle className="h-4 w-4 mr-1 mt-0.5 text-orange-500 flex-shrink-0" title="Remarque" />
                           <div>
                             <p className={isDescriptionExpanded ? "" : "line-clamp-2"}>
                               {article.description}
@@ -754,7 +765,7 @@ const Dashboard: React.FC = () => {
                     <div className="mt-3 space-y-1">
                       {article.unit_price !== null && (
                         <div className="flex items-center text-sm">
-                          <DollarSign className="h-4 w-4 mr-1 text-green-500" />
+                          <DollarSign className="h-4 w-4 mr-1 text-green-500" title="Prix unitaire" />
                           <span className={article.unit_price === 0 ? "text-green-600 font-medium" : "text-gray-700"}>
                             Prix unitaire: {article.unit_price === 0 ? 'Gratuit' : `${article.unit_price.toFixed(2)} €`}
                           </span>
@@ -763,7 +774,7 @@ const Dashboard: React.FC = () => {
                       
                       {article.total_price !== null && (
                         <div className="flex items-center text-sm font-medium">
-                          <DollarSign className="h-4 w-4 mr-1 text-green-500" />
+                          <DollarSign className="h-4 w-4 mr-1 text-green-500" title="Prix total" />
                           <span className={article.total_price === 0 ? "text-green-600 font-medium" : "text-gray-700"}>
                             Prix total: {article.total_price === 0 ? 'Gratuit' : `${article.total_price.toFixed(2)} €`}
                           </span>
@@ -771,24 +782,37 @@ const Dashboard: React.FC = () => {
                       )}
                     </div>
                     
-                    {article.expiry_date && (
-                      <div className="flex items-center text-sm mt-2" 
-                        style={{ 
-                          color: expiryStatus === 'expired' ? '#e53e3e' : 
-                                 expiryStatus === 'expiring-soon' ? '#dd6b20' : 
-                                 '#718096' 
-                        }}
-                      >
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span>
-                          {expiryStatus === 'expired' ? 'Expiré le ' : 'Expire le '}
-                          {format(new Date(article.expiry_date), 'dd MMMM yyyy', { locale: fr })}
-                        </span>
+                      {article.expiry_date && (
+                        <div className="flex items-center text-sm mt-2"
+                          style={{
+                            color: expiryStatus === 'expired' ? '#e53e3e' :
+                                   expiryStatus === 'expiring-soon' ? '#dd6b20' :
+                                   '#718096'
+                          }}
+                        >
+                            <Calendar className="h-4 w-4 mr-1" title="Date d'expiration" />
+                          <span className="font-semibold">
+                            {expiryStatus === 'expired' ? 'Expiré le ' : 'Expire le '}
+                            {format(new Date(article.expiry_date), 'dd MMMM yyyy', { locale: fr })}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="bg-gray-50 p-2 rounded-md text-sm text-gray-600 space-y-1 mt-3">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1" title="Date d'ajout" />
+                          <span>
+                            Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <Package className="h-4 w-4 mr-1" title="Fournisseur" />
+                          <span>{article.supplier}</span>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              );
+                );
             })}
           </div>
         </div>
