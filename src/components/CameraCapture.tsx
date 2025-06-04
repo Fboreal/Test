@@ -8,20 +8,20 @@ interface CameraCaptureProps {
 
 const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [error, setError] = useState<string>('');
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
       });
-      setStream(mediaStream);
+      streamRef.current = mediaStream;
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
     } catch (err) {
-      setError('Impossible d\'accéder à la caméra. Veuillez vérifier les permissions.');
+      setError("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
       console.error('Error accessing camera:', err);
     }
   };
@@ -29,8 +29,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
   React.useEffect(() => {
     startCamera();
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
