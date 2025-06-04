@@ -14,7 +14,7 @@ type FormData = {
   agency: string;
   quantity: number;
   unit: string;
-  expiry_date: string;
+  expiry_date?: string;
   unit_price: number;
   description: string;
 };
@@ -137,6 +137,7 @@ export default function ArticleForm() {
 
       const articleData = {
         ...data,
+        expiry_date: data.expiry_date || null,
         user_id: user.id,
         image_url: imageUrl,
         total_price: data.quantity * (data.unit_price || 0),
