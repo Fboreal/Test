@@ -728,19 +728,15 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
 
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getCategoryStyles(article.category)}`}>
-                          {article.category}
-                        </span>
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                          {article.agency}
-                        </span>
-                      </div>
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span>
-                          Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
-                        </span>
+                      <div className="flex flex-wrap gap-2 mb-3 items-center">
+                        <span className={`px-2 py-1 text-xs rounded-full ${getCategoryStyles(article.category)}`}>{article.category}</span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{article.agency}</span>
+                        <div className="flex items-center text-sm text-gray-500 ml-auto">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          <span>
+                            Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
+                          </span>
+                        </div>
                       </div>
 
                     {/* Description - affichée uniquement si elle existe */}
