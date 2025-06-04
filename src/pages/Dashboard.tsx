@@ -533,7 +533,7 @@ const Dashboard: React.FC = () => {
                 >
                   <option value="">Tous les statuts</option>
                   <option value="expired">Périmés</option>
-                  <option value="expiring-soon">Expire bientôt (30 jours)</option>
+                  <option value="expiring-soon">Expire bientôt (15 jours)</option>
                   <option value="valid">Valides</option>
                 </select>
               </div>
