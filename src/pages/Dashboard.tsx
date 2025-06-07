@@ -720,6 +720,28 @@ const Dashboard: React.FC = () => {
                         {article.quantity} {article.unit}
                       </span>
                     </div>
+
+                    {hasDescription && (
+                      <div className="flex items-start mb-2">
+                        <FileText className="h-4 w-4 mr-1 mt-0.5 text-orange-500 flex-shrink-0" />
+                        <div>
+                          <p className={isDescriptionExpanded ? '' : 'line-clamp-2'}>
+                            {article.description}
+                          </p>
+                          {article.description && article.description.length > 100 && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleDescriptionExpand(article.id);
+                              }}
+                              className="text-orange-600 hover:text-orange-800 text-xs mt-1 font-medium"
+                            >
+                              {isDescriptionExpanded ? 'Voir moins' : 'Voir plus'}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
@@ -738,27 +760,6 @@ const Dashboard: React.FC = () => {
                           Ajouté le {format(new Date(article.created_at), 'dd MMMM yyyy', { locale: fr })}
                         </span>
                       </div>
-                      {hasDescription && (
-                        <div className="flex items-start">
-                          <FileText className="h-4 w-4 mr-1 mt-0.5 text-orange-500 flex-shrink-0" />
-                          <div>
-                            <p className={isDescriptionExpanded ? '' : 'line-clamp-2'}>
-                              {article.description}
-                            </p>
-                            {article.description && article.description.length > 100 && (
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  toggleDescriptionExpand(article.id);
-                                }}
-                                className="text-orange-600 hover:text-orange-800 text-xs mt-1 font-medium"
-                              >
-                                {isDescriptionExpanded ? 'Voir moins' : 'Voir plus'}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      )}
                     </div>
                     
                     <div className="mt-3 space-y-1">
