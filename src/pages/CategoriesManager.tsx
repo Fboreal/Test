@@ -6,6 +6,13 @@ import { ArrowLeft, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 
 type Category = Database['public']['Tables']['categories']['Row'];
 
+const sortCategories = (cats: Category[]) =>
+  [...cats].sort((a, b) => {
+    if (a.name === 'Autre') return 1;
+    if (b.name === 'Autre') return -1;
+    return a.name.localeCompare(b.name);
+  });
+
 const CategoriesManager: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -29,7 +36,7 @@ const CategoriesManager: React.FC = () => {
         .order('name');
         
       if (error) throw error;
-      setCategories(data || []);
+      setCategories(sortCategories(data || []));
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Erreur lors du chargement des catégories');
@@ -61,7 +68,7 @@ const CategoriesManager: React.FC = () => {
         return;
       }
       
-      setCategories([...categories, data]);
+      setCategories(sortCategories([...categories, data]));
       setNewCategory('');
       setAddingNew(false);
       toast.success('Catégorie ajoutée avec succès');
@@ -95,8 +102,10 @@ const CategoriesManager: React.FC = () => {
         throw error;
       }
       
-      setCategories(categories.map(cat => 
-        cat.id === editingCategory.id ? { ...cat, name: editName.trim() } : cat
+      setCategories(sortCategories(
+        categories.map(cat =>
+          cat.id === editingCategory.id ? { ...cat, name: editName.trim() } : cat
+        )
       ));
       setEditingCategory(null);
       toast.success('Catégorie mise à jour avec succès');
@@ -125,7 +134,7 @@ const CategoriesManager: React.FC = () => {
           throw error;
         }
         
-        setCategories(categories.filter(cat => cat.id !== id));
+        setCategories(sortCategories(categories.filter(cat => cat.id !== id)));
         toast.success('Catégorie supprimée avec succès');
       } catch (error) {
         console.error('Error deleting category:', error);
