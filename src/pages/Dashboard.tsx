@@ -710,25 +710,25 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   <div className="p-4">
-                    <div className="flex justify-between items-baseline">
-                      <Link to={`/articles/${article.id}`} className="block">
-                        <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
-                          {article.name}
-                        </h2>
-                      </Link>
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex flex-wrap gap-2">
+                        <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
+                          {article.category}
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                          {article.agency}
+                        </span>
+                      </div>
                       <span className="text-sm font-medium text-gray-600">
                         {article.quantity} {article.unit}
                       </span>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">
-                        {article.category}
-                      </span>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        {article.agency}
-                      </span>
-                    </div>
+
+                    <Link to={`/articles/${article.id}`} className="block">
+                      <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                        {article.name}
+                      </h2>
+                    </Link>
                     
                     <div className="bg-gray-50 rounded-md p-2 text-sm text-gray-600 space-y-1 mb-3">
                       <div>Fournisseur: {article.supplier}</div>
