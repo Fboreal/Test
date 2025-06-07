@@ -118,6 +118,16 @@ const ArticleDetails: React.FC = () => {
       </button>
       
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="p-4 border-b bg-gray-50">
+          <div className="flex flex-wrap gap-2">
+            <span className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">
+              {article.category}
+            </span>
+            <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+              {article.agency}
+            </span>
+          </div>
+        </div>
         <div className="md:flex">
           <div className="md:w-1/3 bg-gray-100 flex items-center justify-center">
             {article.image_url ? (
@@ -166,12 +176,6 @@ const ArticleDetails: React.FC = () => {
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">{article.name}</h1>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">
-                    {article.category}
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                    {article.agency}
-                  </span>
                   {expiryStatus === 'expired' && (
                     <span className="px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full flex items-center">
                       <AlertCircle className="h-4 w-4 mr-1" />
