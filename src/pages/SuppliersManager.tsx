@@ -16,6 +16,13 @@ const SuppliersManager: React.FC = () => {
   const [addingNew, setAddingNew] = useState(false);
   const [processingAction, setProcessingAction] = useState(false);
 
+  const sortSuppliersList = (list: Supplier[]) =>
+    [...list].sort((a, b) => {
+      if (a.name === 'Autre') return 1;
+      if (b.name === 'Autre') return -1;
+      return a.name.localeCompare(b.name);
+    });
+
   useEffect(() => {
     fetchSuppliers();
   }, []);
@@ -27,9 +34,9 @@ const SuppliersManager: React.FC = () => {
         .from('suppliers')
         .select('*')
         .order('name');
-        
+
       if (error) throw error;
-      setSuppliers(data || []);
+      setSuppliers(sortSuppliersList(data || []));
     } catch (error) {
       console.error('Error fetching suppliers:', error);
       toast.error('Erreur lors du chargement des fournisseurs');
@@ -61,7 +68,7 @@ const SuppliersManager: React.FC = () => {
         return;
       }
       
-      setSuppliers([...suppliers, data]);
+      setSuppliers(sortSuppliersList([...suppliers, data]));
       setNewSupplier('');
       setAddingNew(false);
       toast.success('Fournisseur ajouté avec succès');
@@ -95,9 +102,10 @@ const SuppliersManager: React.FC = () => {
         throw error;
       }
       
-      setSuppliers(suppliers.map(sup => 
+      const updated = suppliers.map(sup =>
         sup.id === editingSupplier.id ? { ...sup, name: editName.trim() } : sup
-      ));
+      );
+      setSuppliers(sortSuppliersList(updated));
       setEditingSupplier(null);
       toast.success('Fournisseur mis à jour avec succès');
     } catch (error) {
@@ -125,7 +133,7 @@ const SuppliersManager: React.FC = () => {
           throw error;
         }
         
-        setSuppliers(suppliers.filter(sup => sup.id !== id));
+        setSuppliers(sortSuppliersList(suppliers.filter(sup => sup.id !== id)));
         toast.success('Fournisseur supprimé avec succès');
       } catch (error) {
         console.error('Error deleting supplier:', error);
