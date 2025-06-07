@@ -625,12 +625,13 @@ const Dashboard: React.FC = () => {
               
               return (
                 <div key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="h-40 sm:h-48 bg-gray-200 relative">
+                  <div className="aspect-square sm:h-48 bg-gray-200 relative">
                     {article.image_url ? (
                       <div className="w-full h-full overflow-hidden">
                         <img
                           src={article.image_url}
                           alt={article.name}
+                          loading="lazy"
                           className="w-full h-full object-cover cursor-pointer"
                           onClick={() => setFullscreenImage({url: article.image_url!, alt: article.name})}
                         />
